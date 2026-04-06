@@ -127,9 +127,11 @@ def cmd_matches(user_input: str, expected: str) -> bool:
 # ── Uruchamianie komend ────────────────────────────────────────────────────
 
 def run_cmd(cmd: str) -> tuple[str, str]:
-    """Uruchamia komende w zsh, zwraca (stdout, stderr)."""
+    """Uruchamia komende w zsh, zwraca (stdout, stderr).
+    fc -R laduje historie zeby builtin 'history' dzialal w subprocesie."""
+    wrapped = f"fc -R ~/.zsh_history 2>/dev/null; {cmd}"
     result = subprocess.run(
-        cmd,
+        wrapped,
         shell=True,
         executable="/bin/zsh",
         capture_output=True,
@@ -369,9 +371,9 @@ def run_shell_step(step: dict, step_num: int, total_steps: int, quest_id: str):
 
         if user_input == "/skip":
             console.print("[dim]Pomijam krok...[/dim]")
-            stdout, stderr = run_cmd(expected)
-            if stdout:
-                console.print(stdout, end="")
+            output = step.get("output", "")
+            if output:
+                console.print(output)
             break
 
         if user_input == "/hint":
@@ -381,11 +383,9 @@ def run_shell_step(step: dict, step_num: int, total_steps: int, quest_id: str):
             continue
 
         if cmd_matches(user_input, expected):
-            stdout, stderr = run_cmd(user_input)
-            if stdout:
-                console.print(stdout, end="")
-            if stderr:
-                console.print(f"[dim red]{stderr}[/dim red]", end="")
+            output = step.get("output", "")
+            if output:
+                console.print(output)
             console.print("[bold green]✓ Poprawnie![/bold green]")
             time.sleep(0.4)
             break
@@ -441,11 +441,9 @@ def run_boss_shell_step(step: dict, step_num: int, total_steps: int, lives: list
             continue
 
         if cmd_matches(user_input, expected):
-            stdout, stderr = run_cmd(user_input)
-            if stdout:
-                console.print(stdout, end="")
-            if stderr:
-                console.print(f"[dim red]{stderr}[/dim red]", end="")
+            output = step.get("output", "")
+            if output:
+                console.print(output)
             console.print("[bold green]✓ Poprawnie![/bold green]")
             time.sleep(0.4)
             break
