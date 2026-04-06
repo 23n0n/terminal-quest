@@ -218,28 +218,33 @@ QUESTS = [
         "boss": {
             "title": "BOSS FIGHT 1.3 — Mistrz Skrotow",
             "description": (
-                "Straznik Wioski blokuje brame. Wymaga dowodu ze opanowales skroty i nawigacje. "
-                "Trzy zycia — mysl zanim nacisniesz Enter:"
+                "Straznik Wioski blokuje brame i pyta o skroty. "
+                "Udowodnij ze je znasz — trzy zycia wspolne:"
             ),
             "steps": [
-                {"type": "info",
-                 "text": (
-                     "Przed walka — przypomnij sobie skroty:\n"
-                     "  Ctrl+A / Ctrl+E  — poczatek / koniec linii\n"
-                     "  Ctrl+R           — szukaj w historii\n"
-                     "  Ctrl+C           — przerwij biezacy proces\n"
-                     "  Tab              — autouzupelnianie\n"
-                     "  !!               — powtorz ostatnia komende\n\n"
-                     "Pamietaj: w boss fight masz 3 zycia wspolne dla wszystkich krokow."
-                 )},
-                {"type": "shell", "cmd": "echo 'test Ctrl+A i Ctrl+E'",
-                 "hint": "Wpisz komende, uzyj Ctrl+A zeby skoczyc na poczatek, Ctrl+E na koniec",
-                 "output": "test Ctrl+A i Ctrl+E"},
+                {"type": "quiz",
+                 "question": "Jakim skrotem PRZERWIESZ zawieszona komende?",
+                 "answers": ["ctrl+c", "^c"],
+                 "hint": "Wysyla sygnal SIGINT — zabija to co teraz dziala w terminalu"},
+                {"type": "quiz",
+                 "question": "Jakim skrotem WYSZUKASZ poprzednia komende w historii?",
+                 "answers": ["ctrl+r"],
+                 "hint": "Otwiera interaktywne wyszukiwanie wstecz (reverse search)"},
+                {"type": "quiz",
+                 "question": "Jakim skrotem SKOCZYSZ na poczatek linii?",
+                 "answers": ["ctrl+a", "^a"],
+                 "hint": "A jak poczAtek — przesuwa kursor na sam poczatek wpisywanej komendy"},
+                {"type": "quiz",
+                 "question": "Wpisujesz dlugie polecenie i chesz USUNAC ostatnie slowo. Jaki skrot?",
+                 "answers": ["ctrl+w", "^w"],
+                 "hint": "Szybsze niz trzymanie Backspace — usuwa od kursora do poprzedniej spacji"},
+                {"type": "quiz",
+                 "question": "Jak POWTORZYSZ ostatnio wykonana komende z sudo na poczatku?",
+                 "answers": ["sudo !!", "sudo!!"],
+                 "hint": "!! = ostatnia komenda. sudo !! = ta sama komenda ale z uprawnieniami roota"},
                 {"type": "shell", "cmd": "history | tail -5",
-                 "hint": "Pokaz ostatnie 5 komend z historii — | przekazuje output do nastepnej komendy",
+                 "hint": "Pokaz ostatnie 5 komend z historii — sprawdz co wpisywales",
                  "output": "  112  whoami\n  113  date\n  114  uname -a\n  115  clear\n  116  history | tail -5"},
-                {"type": "confirm",
-                 "prompt": "Czy udalo ci sie przerwac komende przez Ctrl+C i wyszukac cos przez Ctrl+R?"},
             ],
         },
     },

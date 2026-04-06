@@ -499,6 +499,67 @@ def run_info_step(step: dict, step_num: int, total_steps: int):
         raise SystemExit(0)
 
 
+def _normalize_quiz(ans: str) -> str:
+    """Normalizuje odpowiedz quizu: lowercase, bez spacji, + zamiast spacji."""
+    return ans.strip().lower().replace(" ", "").replace("–", "+").replace("−", "+")
+
+
+def run_quiz_step(step: dict, step_num: int, total_steps: int, lives: list | None = None):
+    """
+    Krok typu 'quiz' — pytanie tekstowe, gracz wpisuje odpowiedz slowna.
+    Jesli lives podane → tryb boss (konsumuje zycia). Inaczej → nieograniczone proby.
+    """
+    question = step.get("question", "")
+    hint = step.get("hint", "")
+    raw_answers = step.get("answers", [step.get("answer", "")])
+    accepted = {_normalize_quiz(a) for a in raw_answers if a}
+    is_boss_mode = lives is not None
+    border = "red" if is_boss_mode else "cyan"
+
+    while True:
+        hearts = ""
+        if is_boss_mode:
+            hearts = "  " + "[red]♥[/red]" * lives[0] + "[dim]♡[/dim]" * (3 - lives[0])
+        header = f"Krok {step_num}/{total_steps} — Pytanie{hearts}"
+
+        body = f"[bold]{question}[/bold]"
+        if hint:
+            body += f"\n[dim]{hint}[/dim]"
+
+        console.print()
+        console.print(Panel(body, title=f"[bold]{header}[/bold]", border_style=border, padding=(0, 1)))
+
+        try:
+            user_input = console.input(PROMPT + "[dim](wpisz odpowiedz)[/dim] ").strip()
+        except (EOFError, KeyboardInterrupt):
+            raise SystemExit(0)
+
+        if not user_input:
+            continue
+
+        if user_input.lower() in ("/hint", "hint"):
+            console.print(f"[yellow]Odpowiedz:[/yellow] [bold]{raw_answers[0]}[/bold]")
+            continue
+
+        if _normalize_quiz(user_input) in accepted:
+            console.print("[bold green]✓ Poprawnie![/bold green]")
+            time.sleep(0.4)
+            break
+        else:
+            if is_boss_mode:
+                lives[0] -= 1
+                if lives[0] <= 0:
+                    console.print("[bold red]✗ Zla odpowiedz! Tracisz ostatnie zycie![/bold red]")
+                    time.sleep(1.5)
+                    raise BossDefeatError()
+                remaining = "[red]♥[/red]" * lives[0] + "[dim]♡[/dim]" * (3 - lives[0])
+                console.print(f"[bold red]✗ Zla odpowiedz! Pozostale zycia: {remaining}[/bold red]")
+                time.sleep(0.5)
+            else:
+                console.print("[red]Niepoprawnie. Sprobuj jeszcze raz.[/red]")
+                console.print("[dim]/hint — pokaz odpowiedz[/dim]")
+
+
 # ── Konsekwencja przegranej boss fight ─────────────────────────────────────
 
 def apply_boss_defeat(state: SaveState, quest: dict) -> list[int]:
@@ -599,6 +660,11 @@ def run_quest(quest: dict, state: SaveState):
                 run_confirm_step(step, i, total)
             elif stype == "info":
                 run_info_step(step, i, total)
+            elif stype == "quiz":
+                if is_boss:
+                    run_quiz_step(step, i, total, lives)
+                else:
+                    run_quiz_step(step, i, total)
     except BossDefeatError:
         worlds_reset = apply_boss_defeat(state, quest)
         show_boss_defeat(quest, worlds_reset)
