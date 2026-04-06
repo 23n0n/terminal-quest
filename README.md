@@ -48,4 +48,4 @@ python3 game.py
 
 ## Autor
 
-Piotr Żabrowski — licencja MIT
+vibecoded by Piotr Żabrowski — licencja MIT
