@@ -1,0 +1,164 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #090c10;
+  font-family: 'JetBrains Mono', 'Fira Code', Consolas, 'Courier New', monospace;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  color: #c9d1d9;
+}
+
+/* ── Window ──────────────────────────────────────────────────── */
+.terminal-window {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #0d1117;
+}
+
+@media (min-width: 980px) {
+  .terminal-window {
+    width: min(960px, 98vw);
+    height: 92vh;
+    border-radius: 10px;
+    box-shadow: 0 28px 90px rgba(0,0,0,.85);
+    overflow: hidden;
+  }
+}
+
+/* ── Titlebar ─────────────────────────────────────────────────── */
+.terminal-titlebar {
+  background: #161b22;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid #21262d;
+  flex-shrink: 0;
+}
+.dot { width: 12px; height: 12px; border-radius: 50%; }
+.dot-red    { background: #ff5f57; }
+.dot-yellow { background: #ffbd2e; }
+.dot-green  { background: #28c840; }
+.terminal-title {
+  color: #8b949e;
+  font-size: 12px;
+  margin: 0 auto;
+  letter-spacing: .4px;
+}
+
+/* ── Body ────────────────────────────────────────────────────── */
+.terminal-body {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 14px;
+  gap: 8px;
+}
+
+/* ── Output ──────────────────────────────────────────────────── */
+#output {
+  flex: 1;
+  overflow-y: auto;
+  font-size: 13px;
+  line-height: 1.65;
+  scrollbar-width: thin;
+  scrollbar-color: #30363d transparent;
+}
+#output::-webkit-scrollbar { width: 5px; }
+#output::-webkit-scrollbar-thumb { background: #30363d; border-radius: 3px; }
+
+/* ── Input line ──────────────────────────────────────────────── */
+.input-line {
+  display: flex;
+  align-items: center;
+  border-top: 1px solid #21262d;
+  padding-top: 8px;
+  flex-shrink: 0;
+}
+#prompt { white-space: nowrap; font-size: 13px; }
+#cmd-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #c9d1d9;
+  font-family: inherit;
+  font-size: 13px;
+  caret-color: #3fb950;
+}
+
+/* ── Colors ──────────────────────────────────────────────────── */
+.g  { color: #3fb950; }   /* green  */
+.c  { color: #79c0ff; }   /* cyan   */
+.r  { color: #f85149; }   /* red    */
+.y  { color: #d29922; }   /* yellow */
+.m  { color: #d2a8ff; }   /* magenta */
+.b  { color: #388bfd; }   /* blue   */
+.d  { color: #8b949e; }   /* dim    */
+.bld { font-weight: bold; }
+.ita { font-style: italic; }
+
+/* ── Panel ───────────────────────────────────────────────────── */
+.panel {
+  border: 1px solid;
+  border-radius: 5px;
+  margin: 5px 0;
+  overflow: hidden;
+}
+.p-cyan   { border-color: #79c0ff; }
+.p-red    { border-color: #f85149; }
+.p-yellow { border-color: #d29922; }
+.p-blue   { border-color: #388bfd; }
+.p-green  { border-color: #3fb950; }
+
+.panel-hd {
+  padding: 4px 12px;
+  font-weight: bold;
+  font-size: 12px;
+  border-bottom: 1px solid;
+}
+.p-cyan .panel-hd   { background:rgba(121,192,255,.07); color:#79c0ff; border-color:#79c0ff; }
+.p-red .panel-hd    { background:rgba(248,81,73,.07);   color:#f85149; border-color:#f85149; }
+.p-yellow .panel-hd { background:rgba(210,153,34,.07);  color:#d29922; border-color:#d29922; }
+.p-blue .panel-hd   { background:rgba(56,139,253,.07);  color:#388bfd; border-color:#388bfd; }
+.p-green .panel-hd  { background:rgba(63,185,80,.07);   color:#3fb950; border-color:#3fb950; }
+
+.panel-bd {
+  padding: 8px 12px;
+  line-height: 1.65;
+  white-space: pre-wrap;
+}
+
+/* ── Theory table ────────────────────────────────────────────── */
+.tbl {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 5px 0;
+  font-size: 12.5px;
+}
+.tbl th {
+  background: #161b22;
+  color: #79c0ff;
+  padding: 5px 10px;
+  text-align: left;
+  border: 1px solid #21262d;
+}
+.tbl td {
+  padding: 4px 10px;
+  border: 1px solid #1c2128;
+  vertical-align: top;
+}
+.tbl tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+.tbl .tc { color: #3fb950; font-weight: bold; white-space: nowrap; }
+.tbl .tw { color: #c9d1d9; }
+.tbl .tn { color: #8b949e; font-size: 12px; }
+
+/* ── Misc ────────────────────────────────────────────────────── */
+.cmd-out  { color: #c9d1d9; white-space: pre-wrap; margin: 2px 0; opacity: .9; }
+.echo-in  { color: #8b949e; }
+.sep      { color: #21262d; margin: 6px 0; }
